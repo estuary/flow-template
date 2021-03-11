@@ -1,0 +1,23 @@
+# This action is a temporary step along the way to an official flowctl action.
+# The main purpose for now is to allow us to ensure that the template repo
+# itself remains in good working order. Defining the action in this repo allows
+# it to use the same Dockerfile that's used by the devcontainer.
+name: 'Flowctl'
+description: 'Build and Test flow catalogs'
+inputs:
+  command:
+    description: 'Which flowctl command to run, on of: build, test'
+    required: true
+    default: 'test'
+  source:  # id of input
+    description: 'path to the flow yaml source'
+    required: true
+    default: 'flow.yaml'
+runs:
+  using: 'docker'
+  image: '../../../.devcontainer/Dockerfile'
+  entrypoint: flowctl
+  args:
+    - ${{ inputs.command }}
+    - '--source'
+    - ${{ inputs.source }}
