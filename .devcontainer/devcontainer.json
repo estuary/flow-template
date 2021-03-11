@@ -1,0 +1,63 @@
+{
+	"name": "Estuary Flow",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "flow",
+	"workspaceFolder": "/workspace",
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"terminal.integrated.shell.linux": "/bin/bash",
+		"sqltools.connections": [
+			{
+				"name": "Container database",
+				"driver": "PostgreSQL",
+				"previewLimit": 50,
+				"server": "localhost",
+				"port": 5432,
+				"database": "flow",
+				"username": "flow",
+				"password": "flow"
+			}
+		],
+		"yaml.schemas": {
+			"https://json-schema.org/draft/2019-09/schema": [
+				"schema.yml",
+				"schema.yaml",
+				"*.schema.yml",
+				"*.schema.yaml"
+			],
+			"/usr/local/etc/flow.schema.json": [
+				"flow.yml",
+				"flow.yaml",
+				"*.flow.yml",
+				"*.flow.yaml"
+			]
+		},
+		"python.pythonPath": "/usr/bin/python3"
+	},
+	// IDs of extensions to install when the container is created.
+	"extensions": [
+		// SQL support.
+		"mtxr.sqltools",
+		// Driver for attached, docker compose database.
+		"mtxr.sqltools-driver-pg",
+		// YAML language & schema support.
+		"redhat.vscode-yaml",
+		// Spell checker for documentation and catalogs.
+		"streetsidesoftware.code-spell-checker"
+	],
+	// The `flowctl develop` command uses default ports of:
+	//  * 8080 for the Gazette broker.
+	//  * 8081 for the Flow ingester.
+	//  * 9000 for the Flow consumer.
+	//
+	// Here, we forward ports for PostgreSQL and the ingester.
+	"forwardPorts": [
+		5432,
+		8081
+	],
+	// Build the repository catalog on container creation.
+	// This can take a few moments while NPM dependencies are pulled.
+	//"postCreateCommand": "flowctl build --source flow.yaml",
+	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
+	// "remoteUser": "flow"
+}

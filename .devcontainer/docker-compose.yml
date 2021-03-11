@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  flow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # [Choice] Node.js version: 14, 12, 10
+        VARIANT: 12
+        # On Linux, you may need to update USER_UID and USER_GID below if not your local UID is not 1000.
+        USER_UID: 1000
+        USER_GID: 1000
+
+    volumes:
+      - ..:/workspace:cached
+    # Don't shut down after the process ends.
+    command: sleep infinity
+    # Wrap in an init process that reaps defunct child processes.
+    # TODO(johnny): This isn't supported on CodeSpaces (yet).
+    #init: true
+    # Run development container on the same network as the database,
+    # which allows "forwardPorts" in devcontainer.json function.
+    # Use a non-root user.
+    # user: flow
+    #
+    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally.
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
+
+    # Github Codespaces currently forces "host" network mode:
+    # https://github.community/t/cant-connect-to-postgres/142655
+    network_mode: host
+
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: flow
+      POSTGRES_PASSWORD: flow
+
+    # Github Codespaces currently forces "host" network mode:
+    # https://github.community/t/cant-connect-to-postgres/142655
+    network_mode: host
+
+volumes:
+  postgres-data: {}

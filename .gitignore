@@ -1,0 +1,11 @@
+# Working directory for flowctl develop
+/flowctl-develop/
+# Output of flowctl build
+catalog.db
+
+# Directories use by nodejs builds and runtime
+/node_modules/
+/dist/
+
+# SQLite database that's created for local development of flow materializations
+hello-world.db

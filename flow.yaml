@@ -1,0 +1,54 @@
+collections:
+  hello/people:
+    schema:
+      type: object
+      properties:
+        name: {type: string}
+      required: [name]
+    key: [/name]
+
+  hello/greetings:
+    schema:
+      type: object
+      properties:
+        message: {type: string}
+      required: [message]
+    key: [/message]
+    derivation:
+      transform: 
+        sayHello:
+          source:
+            name: hello/people
+          publish: 
+            lambda: typescript
+
+endpoints: 
+  # Defines a sqlite endpoint, which is nice for local development
+  devSQLite:
+    sqlite:
+      path: hello-world.db
+          
+materializations: 
+  # Binds the hello/greetings collection to the devSQLite endpoint, which will be
+  # updated in realtime as documents are added to the collection.
+  - source:
+      name: hello/greetings
+    endpoint:
+      name: devSQLite
+      config: 
+        table: hello_world
+      
+tests:
+  'test greeting':
+    - ingest:
+        collection: hello/people
+        documents:
+          - { name: Alice }
+          - { name: Bobby }
+          - { name: Samus }
+    - verify:
+        collection: hello/greetings
+        documents:
+          - {message: 'Hello Alice!'}
+          - {message: 'Hello Bobby!'}
+          - {message: 'Hello Samus!'}
