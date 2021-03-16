@@ -1,7 +1,7 @@
 # Update the VARIANT arg in docker-compose.yml to pick a Node version: 10, 12, 14
 ARG VARIANT=12
 
-FROM quay.io/estuary/flow:v0.1.0-227-g917df3d-dirty
+FROM quay.io/estuary/flow:v0.1.0-229-g9e43385-dirty
 FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:${VARIANT}
 
 RUN apt-key adv --refresh-keys --keyserver keyserver.ubuntu.com \
