@@ -15,7 +15,7 @@ inputs:
     default: 'flow.yaml'
 runs:
   using: 'docker'
-  image: '../../../.devcontainer/Dockerfile'
+  image: 'quay.io/estuary/flow:v0.1.0-234-gf1d072b-dirty'
   entrypoint: flowctl
   args:
     - ${{ inputs.command }}
