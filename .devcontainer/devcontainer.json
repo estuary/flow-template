@@ -1,4 +1,6 @@
 {
+    // Note that we don't forward any ports here, because the docker containers are running with --network=host
+
 	"name": "Estuary Flow",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "flow",
@@ -45,19 +47,6 @@
 		// Spell checker for documentation and catalogs.
 		"streetsidesoftware.code-spell-checker"
 	],
-	// The `flowctl develop` command uses default ports of:
-	//  * 8080 for the Gazette broker.
-	//  * 8081 for the Flow ingester.
-	//  * 9000 for the Flow consumer.
-	//
-	// Here, we forward ports for PostgreSQL and the ingester.
-	"forwardPorts": [
-		5432,
-		8081
-	],
-	// Build the repository catalog on container creation.
-	// This can take a few moments while NPM dependencies are pulled.
-	//"postCreateCommand": "flowctl build --source flow.yaml",
-	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
-	// "remoteUser": "flow"
+    // this user matches the user that's created inside the flow image
+	"remoteUser": "flow"
 }
