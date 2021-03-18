@@ -16,8 +16,9 @@ inputs:
 runs:
   using: 'docker'
   image: '../../../.devcontainer/Dockerfile'
-  entrypoint: flowctl
+  entrypoint: sudo
   args:
+    - flowctl
     - ${{ inputs.command }}
     - '--source'
     - ${{ inputs.source }}
