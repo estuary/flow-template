@@ -8,14 +8,18 @@ export type Lambda = (source: Document, register?: Document, previous?: Document
 // "Use" imported modules, even if they're empty, to satisfy compiler and linting.
 export type __interfaces_module = interfaces.__module;
 // Import derivation classes from their implementation modules.
-import { HelloGreetings } from '../../flow';
+import {
+    Greetings,
+} from '../../hello-world.flow';
 
 // Build instances of each class, which will be bound to this module's router.
-const __HelloGreetings: interfaces.HelloGreetings = new HelloGreetings();
+let __Greetings: interfaces.Greetings = new Greetings();
 
 // Now build the router that's used for transformation lambda dispatch.
-const routes: { [path: string]: Lambda | undefined } = {
-    '/derive/hello/greetings/sayHello/Publish': __HelloGreetings.sayHelloPublish.bind(__HelloGreetings) as Lambda,
+let routes: { [path: string]: Lambda | undefined } = {
+    '/derive/greetings/sayHello/Publish': __Greetings.sayHelloPublish.bind(
+        __Greetings,
+    ) as Lambda,
 };
 
 export { routes };

@@ -1,5 +1,5 @@
 collections:
-  hello/people:
+  people:
     schema:
       type: object
       properties:
@@ -7,7 +7,7 @@ collections:
       required: [name]
     key: [/name]
 
-  hello/greetings:
+  greetings:
     schema:
       type: object
       properties:
@@ -18,7 +18,7 @@ collections:
       transform: 
         sayHello:
           source:
-            name: hello/people
+            name: people
           publish: 
             lambda: typescript
 
@@ -29,10 +29,10 @@ endpoints:
       path: hello-world.db
           
 materializations: 
-  # Binds the hello/greetings collection to the devSQLite endpoint, which will be
+  # Binds the greetings collection to the devSQLite endpoint, which will be
   # updated in realtime as documents are added to the collection.
   - source:
-      name: hello/greetings
+      name: greetings
     endpoint:
       name: devSQLite
       config: 
@@ -40,14 +40,16 @@ materializations:
       
 tests:
   'test greeting':
+    # Adds documents to the people collection
     - ingest:
-        collection: hello/people
+        collection: people
         documents:
           - { name: Alice }
           - { name: Bobby }
           - { name: Samus }
+    # Asserts that the complete set of greetings documents matches these documents.
     - verify:
-        collection: hello/greetings
+        collection: greetings
         documents:
           - {message: 'Hello Alice!'}
           - {message: 'Hello Bobby!'}

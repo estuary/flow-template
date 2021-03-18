@@ -8,12 +8,12 @@ export type __collections_module = collections.__module;
 export type __registers_module = registers.__module;
 export type __transforms_module = transforms.__module;
 
-// Generated from derivation flow.yaml#/collections/hello~1greetings/derivation.
-// Required to be implemented by flow.ts.
-export interface HelloGreetings {
+// Generated from derivation hello-world.flow.yaml#/collections/greetings/derivation.
+// Required to be implemented by hello-world.flow.ts.
+export interface Greetings {
     sayHelloPublish(
-        source: collections.HelloPeople,
-        register: registers.HelloGreetings,
-        previous: registers.HelloGreetings,
-    ): collections.HelloGreetings[];
+        source: collections.People,
+        register: registers.Greetings,
+        previous: registers.Greetings,
+    ): collections.Greetings[];
 }

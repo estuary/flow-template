@@ -4,6 +4,6 @@ import * as anchors from './anchors';
 export type __module = null;
 export type __anchors_module = anchors.__module;
 
-// Generated from flow.yaml?ptr=/collections/hello~1greetings/derivation/register/schema.
-// Referenced as register_schema of flow.yaml#/collections/hello~1greetings/derivation.
-export type HelloGreetings = unknown;
+// Generated from hello-world.flow.yaml?ptr=/collections/greetings/derivation/register/schema.
+// Referenced as register_schema of hello-world.flow.yaml#/collections/greetings/derivation.
+export type Greetings = unknown;

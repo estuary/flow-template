@@ -1,6 +1,5 @@
 {
   "files": [
-    "../flow.ts",
     "../flow_generated/flow/anchors.d.ts",
     "../flow_generated/flow/collections.d.ts",
     "../flow_generated/flow/interfaces.d.ts",
@@ -9,6 +8,7 @@
     "../flow_generated/flow/registers.d.ts",
     "../flow_generated/flow/routes.ts",
     "../flow_generated/flow/server.ts",
-    "../flow_generated/flow/transforms.d.ts"
+    "../flow_generated/flow/transforms.d.ts",
+    "../hello-world.flow.ts"
   ]
 }
