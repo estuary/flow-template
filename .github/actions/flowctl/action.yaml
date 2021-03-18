@@ -16,6 +16,10 @@ inputs:
 runs:
   using: 'docker'
   image: '../../../.devcontainer/Dockerfile'
+  # Actions must run as root. See:
+  # https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
+  # Rather than creating an entirely separate Dockerfile without the USER instruction,
+  # this takes advantage of the fact that the devcontiner has a nopasswd sudo configured.
   entrypoint: sudo
   args:
     - flowctl
