@@ -7,6 +7,6 @@ export class Greetings implements interfaces.Greetings {
         _register: registers.Greetings,
         _previous: registers.Greetings,
     ): collections.Greetings[] {
-        return [{ message: `Hello ${source.name}!` }];
+        return [{ id: source.id, greeting: `Hello ${source.name}!` }];
     }
 }

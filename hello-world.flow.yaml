@@ -1,19 +1,25 @@
+# Collections each represent a dataset that may be continuously updated
 collections:
   people:
+    # Each person document must conform to this schema
     schema:
       type: object
       properties:
-        name: {type: string}
-      required: [name]
-    key: [/name]
+        id: {type: integer, description: 'The unique id of each person'}
+        name: {type: string, description: 'What this person would like to be called'}
+      required: [id, name]
+    key: [/id]
 
   greetings:
     schema:
       type: object
       properties:
-        message: {type: string}
-      required: [message]
-    key: [/message]
+        id: {type: integer, description: 'The id of the person who this greeting is for'}
+        greeting: 
+          type: string
+          description: 'How to say hello, in keeping with nearly 50 years of programming tradition'
+      required: [id, greeting]
+    key: [/id]
     derivation:
       transform: 
         sayHello:
@@ -21,6 +27,9 @@ collections:
             name: people
           publish: 
             lambda: typescript
+  foo:
+    schema: {type: string}
+    key: ['']
 
 endpoints: 
   # Defines a sqlite endpoint, which is nice for local development
@@ -44,13 +53,11 @@ tests:
     - ingest:
         collection: people
         documents:
-          - { name: Alice }
-          - { name: Bobby }
-          - { name: Samus }
+          - { id: 1, name: Alice }
+          - { id: 2, name: Bobby }
     # Asserts that the complete set of greetings documents matches these documents.
     - verify:
         collection: greetings
         documents:
-          - {message: 'Hello Alice!'}
-          - {message: 'Hello Bobby!'}
-          - {message: 'Hello Samus!'}
+          - {id: 1, greeting: 'Hello Alice!'}
+          - {id: 2, greeting: 'Hello Bobby!'}
