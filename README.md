@@ -4,4 +4,4 @@ This repository serves a template for new Flow projects. To use it, click on the
 
 ## Flow Documentation
 
-The Flow documentation is available at (https://app.gitbook.com/@estuary/s/flow/).
+The Flow documentation is available at (https://docs.estuary.dev/).
