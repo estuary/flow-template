@@ -2,10 +2,10 @@ name: CI
 on: [push, pull_request]
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
-      - name: 'Test'
+      - name: "Test"
         uses: ./.github/actions/flowctl
         with:
           source: hello-world.flow.yaml
