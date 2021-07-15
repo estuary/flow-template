@@ -7,11 +7,19 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ..:/workspace:cached
-    # Don't shut down after the process ends.
-    command: sleep infinity
-    # Wrap in an init process that reaps defunct child processes.
-    # TODO(johnny): This isn't supported on CodeSpaces (yet).
-    #init: true
+      # Map the host docker socket into the container.
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Map /var/tmp of the host into the container, such that files staged into
+      # /var/tmp are accessible on the host, and from there through started docker
+      # invocations which pass files via bind-mounts.
+      #
+      # TODO(johnny): For reasons I don't understand, doing this with /tmp doesn't
+      # work on Github Codespaces (but works fine in VSCode Remote Containers).
+      - /var/tmp:/var/tmp
+
+    # Use /var/tmp as the default temporary directory, rather than /tmp.
+    environment:
+      TMPDIR: /var/tmp
 
     # Github Codespaces currently forces "host" network mode:
     # https://github.community/t/cant-connect-to-postgres/142655
