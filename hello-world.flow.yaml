@@ -1,63 +1,64 @@
-# Collections each represent a dataset that may be continuously updated
 collections:
-  people:
-    # Each person document must conform to this schema
+  acmeCo/greetings:
     schema:
-      type: object
       properties:
-        id: {type: integer, description: 'The unique id of each person'}
-        name: {type: string, description: 'What this person would like to be called'}
-      required: [id, name]
-    key: [/id]
-
-  greetings:
-    schema:
-      type: object
-      properties:
-        id: {type: integer, description: 'The id of the person who this greeting is for'}
-        greeting: 
+        count:
+          type: integer
+        message:
           type: string
-          description: 'How to say hello, in keeping with nearly 50 years of programming tradition'
-      required: [id, greeting]
-    key: [/id]
-    derivation:
-      transform: 
-        sayHello:
-          source:
-            name: people
-          publish: 
-            lambda: typescript
-  foo:
-    schema: {type: string}
-    key: ['']
+      required:
+        - count
+        - message
+      type: object
+    key: [/count]
 
-endpoints: 
-  # Defines a sqlite endpoint, which is nice for local development
-  devSQLite:
-    sqlite:
-      path: hello-world.db
-          
-materializations: 
-  # Binds the greetings collection to the devSQLite endpoint, which will be
-  # updated in realtime as documents are added to the collection.
-  - source:
-      name: greetings
+captures:
+  acmeCo/source-hello-world:
     endpoint:
-      name: devSQLite
-      config: 
-        table: hello_world
-      
+      airbyteSource:
+        image: ghcr.io/estuary/source-hello-world:8406f63-dirty
+        config:
+          # Number of greeting documents to produce when running in non-tailing mode
+          # [integer] (required)
+          greetings: 100
+    bindings:
+      - resource:
+          stream: greetings
+          syncMode: incremental
+        target: acmeCo/greetings
+
+materializations:
+  acmeCo/database:
+    endpoint:
+      sqlite:
+        path: acmeCo.db
+    bindings:
+      - resource:
+          table: greetings
+        source: acmeCo/greetings
+
 tests:
-  'test greeting':
-    # Adds documents to the people collection
+  "Add some greetings":
     - ingest:
-        collection: people
+        collection: acmeCo/greetings
         documents:
-          - { id: 1, name: Alice }
-          - { id: 2, name: Bobby }
-    # Asserts that the complete set of greetings documents matches these documents.
+          - { count: 1, message: Hello }
+          - { count: 2, message: Hello }
     - verify:
-        collection: greetings
+        collection: acmeCo/greetings
         documents:
-          - {id: 1, greeting: 'Hello Alice!'}
-          - {id: 2, greeting: 'Hello Bobby!'}
+          - { count: 1, message: Hello }
+          - { count: 2, message: Hello }
+
+    # Second ingestion inserts and replaces greetings.
+    - ingest:
+        collection: acmeCo/greetings
+        documents:
+          - { count: 2, message: Goodbye }
+          - { count: 3, message: Hi }
+    - verify:
+        collection: acmeCo/greetings
+        documents:
+          - { count: 1, message: Hello }
+          - { count: 2, message: Goodbye }
+          - { count: 3, message: Hi }
