@@ -62,3 +62,13 @@ tests:
           - { count: 1, message: Hello }
           - { count: 2, message: Goodbye }
           - { count: 3, message: Hi }
+
+# journalRules control how Flow collections map into Gazette journals.
+# Here, we persist to the local filesystem as a stand-in for cloud storage.
+journalRules:
+  00_fragment_store:
+    template:
+      fragment:
+        compression_codec: GZIP
+        stores: [file:///]
+        flush_interval: 5m
