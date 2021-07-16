@@ -2,27 +2,33 @@
 # The main purpose for now is to allow us to ensure that the template repo
 # itself remains in good working order. Defining the action in this repo allows
 # it to use the same Dockerfile that's used by the devcontainer.
-name: 'Flowctl'
-description: 'Build and Test flow catalogs'
+name: Flowctl
+description: Build and Test flow catalogs
 inputs:
   command:
-    description: 'Which flowctl command to run, on of: build, test'
-    required: true
-    default: 'test'
-  source:  # id of input
-    description: 'path to the flow yaml source'
-    required: true
-    default: 'flow.yaml'
+    description: Which flowctl command to run
+    required: false
+    default: test
+  source:
+    description: Path to the Flow yaml source
+    required: false
+    default: flow.yaml
 runs:
-  using: 'docker'
-  image: '../../../.devcontainer/Dockerfile'
-  # Actions must run as root. See:
-  # https://docs.github.com/en/actions/creating-actions/dockerfile-support-for-github-actions#user
-  # Rather than creating an entirely separate Dockerfile without the USER instruction,
-  # this takes advantage of the fact that the devcontiner has a nopasswd sudo configured.
-  entrypoint: sudo
-  args:
-    - flowctl
-    - ${{ inputs.command }}
-    - '--source'
-    - ${{ inputs.source }}
+  using: composite
+  steps:
+    - name: print version
+      # The final line of --help is always the build version and timestamp.
+      run: docker run --rm quay.io/estuary/flow:dev flowctl --help 2>&1 | tail -1 || true
+      shell: bash
+
+    - name: ${{ inputs.command }}
+      run: |
+        docker run \
+          --rm \
+          --user root \
+          -v "${{ github.workspace }}:/home/flow/project:cached" \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -v /tmp:/tmp \
+          quay.io/estuary/flow:dev \
+          flowctl ${{ inputs.command }} --source ${{ inputs.source }}
+      shell: bash
