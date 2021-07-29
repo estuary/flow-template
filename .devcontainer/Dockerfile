@@ -26,7 +26,7 @@ RUN flowctl json-schema > /usr/local/etc/flow.schema.json
 
 # Adapted from: https://github.com/microsoft/vscode-dev-containers/tree/main/containers/docker-from-docker#adding-the-user-to-a-docker-group
 COPY library-scripts/docker-debian.sh /tmp/library-scripts/
-RUN apt-get update && bash /tmp/library-scripts/docker-debian.sh
+RUN bash /tmp/library-scripts/docker-debian.sh true /var/run/docker-host.sock /var/run/docker.sock flow false
 
 # VS Code overrides ENTRYPOINT and CMD when executing `docker run` by default.
 # Setting the ENTRYPOINT to docker-init.sh will configure non-root access to

@@ -8,7 +8,7 @@ services:
     volumes:
       - ..:/workspace:cached
       # Map the host docker socket into the container.
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker-host.sock
       # Map /var/tmp of the host into the container, such that files staged into
       # /var/tmp are accessible on the host, and from there through started docker
       # invocations which pass files via bind-mounts.
