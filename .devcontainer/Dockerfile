@@ -6,6 +6,7 @@ RUN apt-get update -y \
     && apt-get install --no-install-recommends -y \
       postgresql-client \
       sqlite3 \
+      procps \
       pv \
       jq \
       sudo \
