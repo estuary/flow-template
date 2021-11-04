@@ -1,0 +1,39 @@
+collections:
+  acmeCo/events:
+    schema: "event.schema.yaml"
+    key: [/event]
+    projections:
+      user_id: /user
+      segment_name: /segment/name
+      segment_vendor: /segment/vendor
+
+captures:
+  acmeCo/analytics_hub:
+    endpoint:
+      airbyteSource:
+        image: ghcr.io/estuary/demos-segmentation/event-generator:latest
+        config:
+          maxEventsPerSecond: 1000 # 10000
+          segmentCardinality: 500
+          userCardinality: 10000
+    bindings:
+      - resource:
+          stream: segmentation-events
+          syncMode: incremental
+        target: acmeCo/events
+
+materializations:
+  acmeCo/event-db:
+    endpoint:
+      flowSink:
+        image: materialize-postgres:dev
+        config:
+          host: localhost
+          port: 5432
+          user: flow
+          password: flow
+          database: flow
+    bindings:
+      - resource:
+          table: segmentation_events
+        source: acmeCo/events
