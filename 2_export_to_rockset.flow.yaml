@@ -1,0 +1,43 @@
+collections:
+  acmeCo/logs/events:
+    schema:
+      $schema: https://json-schema.org/draft/2020-12/schema
+      type: object
+      properties:
+        _change_type: { type: string }
+        event: { type: string, format: uuid }
+        remove: { type: [boolean, "null"] }
+        segment_name: { type: string, minLength: 1, maxLength: 32 }
+        segment_vendor: { type: integer, minimum: 1 }
+        timestamp: { type: string, format: date-time }
+        user_id: { type: string }
+      required: [event, segment_name, segment_vendor, timestamp, user_id]
+    key: [/event]
+
+captures:
+  acmeCo/log_collector:
+    endpoint:
+      airbyteSource:
+        image: source-postgres:dev
+        config:
+          connectionURI: "postgres://flow:flow@localhost:5432/flow"
+    bindings:
+      - resource:
+          stream: segmentation_events
+          syncMode: incremental
+        target: acmeCo/logs/events
+
+materializations:
+  acmeCo/segmentation_analysis:
+    endpoint:
+      flowSink:
+        config:
+          api_key: supersecret
+          http_logging: false
+          change_indicator: /_change_type
+        image: materialize-rockset:dev
+    bindings:
+      - resource:
+          workspace: testing
+          collection: user-events
+        source: acmeCo/logs/events
