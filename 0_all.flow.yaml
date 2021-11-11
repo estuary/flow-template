@@ -1,3 +1,17 @@
 import:
   - 1_collect_data.flow.yaml
   - 2_export_to_rockset.flow.yaml
+
+storageMappings:
+  acmeCo/:
+    stores:
+      - bucket: "my-bucket"
+        provider: "S3"
+  ops/:
+    stores:
+      - bucket: "ops-bucket"
+        provider: "S3"
+  recovery/:
+    stores:
+      - bucket: "recovery-bucket"
+        provider: "S3"
