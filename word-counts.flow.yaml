@@ -1,0 +1,112 @@
+collections:
+  # Collection into which we CDC.
+  acmeCo/documents:
+    schema: documents.schema.yaml
+    key: [/id]
+
+  # Derivation of current word counts.
+  acmeCo/word-counts:
+    schema:
+      type: object
+      properties:
+        word:
+          type: string
+          description: A lower-cased word.
+        count:
+          type: integer
+          description: Total number of word occurrences.
+          reduce: { strategy: sum }
+        doc_count:
+          type: integer
+          description: Total number of documents the word has appeared in.
+          reduce: { strategy: sum }
+      required: [word, count, doc_count]
+      reduce: { strategy: merge }
+    key: [/word]
+    derivation:
+      transform:
+        fromDocuments:
+          source:
+            name: acmeCo/documents
+          publish:
+            lambda: typescript
+
+tests:
+  acmeCo/tests/word-counts-from-documents:
+    - ingest:
+        description: Start with some initial documents.
+        collection: acmeCo/documents
+        documents:
+          - _meta:
+              source: &source
+                schema: a-schema
+                table: a-table
+              op: c
+            id: 1
+            body: &doc1 "The cat in the hat!"
+          - _meta:
+              source: *source
+              op: c
+            id: 2
+            body: &doc2 "The cat hat"
+
+    - verify:
+        description: Expect counts reflect initial documents.
+        collection: acmeCo/word-counts
+        documents:
+          - { word: cat, count: 2, doc_count: 2 }
+          - { word: hat, count: 2, doc_count: 2 }
+          - { word: in, count: 1, doc_count: 1 }
+          - { word: the, count: 3, doc_count: 2 }
+
+    - ingest:
+        description: Update a document.
+        collection: acmeCo/documents
+        documents:
+          - _meta:
+              source: *source
+              op: u
+              before:
+                id: 2
+                body: *doc2
+            id: 2
+            body: &doc2 "hat Hat HAT"
+
+    - verify:
+        description: Expect the prior document is retracted, and new one added.
+        collection: acmeCo/word-counts
+        documents:
+          - { word: cat, count: 1, doc_count: 1 }
+          - { word: hat, count: 4, doc_count: 2 }
+          - { word: in, count: 1, doc_count: 1 }
+          - { word: the, count: 2, doc_count: 1 }
+
+    - ingest:
+        description: Delete all documents.
+        collection: acmeCo/documents
+        documents:
+          - _meta:
+              source: *source
+              op: d
+            id: 1
+            body: *doc1
+          - _meta:
+              source: *source
+              op: d
+            id: 2
+            body: *doc2
+
+    - verify:
+        description: Expect all counts are zero.
+        collection: acmeCo/word-counts
+        documents:
+          - { word: cat, count: 0, doc_count: 0 }
+          - { word: hat, count: 0, doc_count: 0 }
+          - { word: in, count: 0, doc_count: 0 }
+          - { word: the, count: 0, doc_count: 0 }
+
+storageMappings:
+  "":
+    stores:
+      - provider: S3
+        bucket: acmeco-data

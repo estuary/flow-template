@@ -1,0 +1,57 @@
+# This schema was produced via `flowctl discover --image ghcr.io/estuary/source-postgres:1d9247b`
+allOf:
+  - properties:
+      _meta:
+        type: object
+        properties:
+          before:
+            $ref: "#PublicDocuments"
+            description: Record state immediately before this change was applied.
+          op:
+            description: "Change operation type: 'c' Insert, 'u' Update, 'd' Delete."
+            enum: [c, d, u]
+          source:
+            additionalProperties: false
+            properties:
+              loc:
+                description: Location of this WAL event as [last Commit.EndLSN; event LSN; current Begin.FinalLSN]. See https://www.postgresql.org/docs/current/protocol-logicalrep-message-formats.html
+                items:
+                  type: integer
+                maxItems: 3
+                minItems: 3
+                type: array
+              schema:
+                description: Database schema of the event.
+                type: string
+              snapshot:
+                description: Snapshot is true if the record was produced from an initial table snapshot
+                type: boolean
+              table:
+                description: Database table of the event.
+                type: string
+              ts_ms:
+                description: Unix timestamp
+                type: integer
+            required:
+              - schema
+              - table
+            type: object
+        required:
+          - op
+          - source
+    required:
+      - _meta
+  - $ref: "#PublicDocuments"
+definitions:
+  PublicDocuments:
+    $anchor: PublicDocuments
+    properties:
+      body:
+        description: Text of the document, which is split and counted.
+        type: string
+      id:
+        description: ID of the document.
+        type: integer
+    required:
+      - id
+    type: object

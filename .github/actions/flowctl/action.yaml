@@ -1,7 +1,6 @@
 # This action is a temporary step along the way to an official flowctl action.
 # The main purpose for now is to allow us to ensure that the template repo
-# itself remains in good working order. Defining the action in this repo allows
-# it to use the same Dockerfile that's used by the devcontainer.
+# itself remains in good working order.
 name: Flowctl
 description: Build and Test flow catalogs
 inputs:
@@ -13,12 +12,16 @@ inputs:
     description: Path to the Flow yaml source
     required: false
     default: flow.yaml
+  image:
+    description: Flow image to run
+    required: false
+    default: ghcr.io/estuary/flow:dev
 runs:
   using: composite
   steps:
     - name: print version
       # The final line of --help is always the build version and timestamp.
-      run: docker run --rm quay.io/estuary/flow:dev flowctl --help 2>&1 | tail -1 || true
+      run: docker run --rm ${{ inputs.image }} flowctl --help 2>&1 | tail -1 || true
       shell: bash
 
     - name: ${{ inputs.command }}
@@ -29,6 +32,6 @@ runs:
           -v "${{ github.workspace }}:/home/flow/project:cached" \
           -v /var/run/docker.sock:/var/run/docker.sock \
           -v /tmp:/tmp \
-          quay.io/estuary/flow:dev \
+          ${{ inputs.image }} \
           flowctl ${{ inputs.command }} --source ${{ inputs.source }}
       shell: bash

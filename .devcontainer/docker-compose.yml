@@ -30,9 +30,13 @@ services:
     restart: unless-stopped
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - type: bind
+        source: ./init-db.sh
+        target: /docker-entrypoint-initdb.d/init-user-db.sh
     environment:
       POSTGRES_USER: flow
       POSTGRES_PASSWORD: flow
+    command: [postgres, "-c", wal_level=logical]
 
     # Github Codespaces currently forces "host" network mode:
     # https://github.community/t/cant-connect-to-postgres/142655
