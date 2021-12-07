@@ -9,12 +9,6 @@
 		"terminal.integrated.shell.linux": "/bin/bash",
 		"sqltools.connections": [
 			{
-				"name": "acmeCo.db",
-				"driver": "SQLite",
-				"previewLimit": 50,
-				"database": "acmeCo.db"
-			},
-			{
 				"name": "Container database",
 				"driver": "PostgreSQL",
 				"previewLimit": 50,
@@ -47,8 +41,6 @@
 		"mtxr.sqltools",
 		// Driver for attached, docker compose database.
 		"mtxr.sqltools-driver-pg",
-		// Driver for local sqlite databases
-		"mtxr.sqltools-driver-sqlite",
 		// YAML language & schema support.
 		"redhat.vscode-yaml",
 		// Spell checker for documentation and catalogs.

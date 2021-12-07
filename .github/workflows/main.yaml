@@ -1,5 +1,10 @@
 name: CI
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -8,10 +13,4 @@ jobs:
       - name: Test catalog
         uses: ./.github/actions/flowctl
         with:
-          source: hello-world.flow.yaml
-
-      - name: Poll catalog
-        uses: ./.github/actions/flowctl
-        with:
-          command: develop --poll
-          source: hello-world.flow.yaml
+          source: word-counts.flow.yaml
