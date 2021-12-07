@@ -1,0 +1,52 @@
+{
+	// Note that we don't forward any ports here, because the docker containers are running with --network=host
+	"name": "Estuary Flow",
+	"dockerComposeFile": "docker-compose.yml",
+	"service": "flow",
+	"workspaceFolder": "/workspace",
+	// Set *default* container specific settings.json values on container create.
+	"settings": {
+		"terminal.integrated.shell.linux": "/bin/bash",
+		"sqltools.connections": [
+			{
+				"name": "Container database",
+				"driver": "PostgreSQL",
+				"previewLimit": 50,
+				"server": "localhost",
+				"port": 5432,
+				"database": "flow",
+				"username": "flow",
+				"password": "flow"
+			}
+		],
+		"yaml.schemas": {
+			"https://json-schema.org/draft/2019-09/schema": [
+				"schema.yml",
+				"schema.yaml",
+				"*.schema.yml",
+				"*.schema.yaml"
+			],
+			"/usr/local/etc/flow.schema.json": [
+				"flow.yml",
+				"flow.yaml",
+				"*.flow.yml",
+				"*.flow.yaml"
+			]
+		},
+		"python.pythonPath": "/usr/bin/python3"
+	},
+	// IDs of extensions to install when the container is created.
+	"extensions": [
+		// SQL support.
+		"mtxr.sqltools",
+		// Driver for attached, docker compose database.
+		"mtxr.sqltools-driver-pg",
+		// YAML language & schema support.
+		"redhat.vscode-yaml",
+		// Spell checker for documentation and catalogs.
+		"streetsidesoftware.code-spell-checker"
+	],
+	// This user matches the user that's created inside the flow image
+	"remoteUser": "flow",
+	"overrideCommand": false
+}

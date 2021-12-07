@@ -1,0 +1,45 @@
+import:
+  - word-counts.flow.yaml
+
+captures:
+  acmeCo/postgres/source-documents:
+    endpoint:
+      airbyteSource:
+        image: ghcr.io/estuary/source-postgres:1d9247b
+        config:
+          # Logical database name to capture from.
+          # [string] (required)
+          database: flow
+          # Host name of the database to connect to.
+          # [string] (required)
+          host: localhost
+          # User password configured within the database.
+          # [string] (required)
+          password: flow
+          # [integer] (required)
+          port: 5432
+          # Database user to use.
+          # [string] (required)
+          user: flow
+    bindings:
+      - resource:
+          namespace: public
+          stream: documents
+          syncMode: incremental
+        target: acmeCo/documents
+
+materializations:
+  acmeCo/postgres/materialize-word-counts:
+    endpoint:
+      flowSink:
+        image: ghcr.io/estuary/materialize-postgres:dev
+        config:
+          database: flow
+          host: localhost
+          password: flow
+          port: 5432
+          user: flow
+    bindings:
+      - resource:
+          table: word_counts
+        source: acmeCo/word-counts
