@@ -1,6 +1,3 @@
-# Test database of the catalog.
-/acmeCo.db
-
 # Directories use by nodejs builds and runtime
 /dist/
 /flowctl_develop/

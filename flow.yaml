@@ -5,7 +5,7 @@ captures:
   acmeCo/postgres/source-documents:
     endpoint:
       airbyteSource:
-        image: ghcr.io/estuary/source-postgres:1d9247b
+        image: ghcr.io/estuary/source-postgres:dev
         config:
           # Logical database name to capture from.
           # [string] (required)

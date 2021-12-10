@@ -2,15 +2,26 @@ FROM ghcr.io/estuary/flow:dev
 
 # Switch to the root user to install packages and setup sudo access
 USER root
+
 RUN apt-get update -y \
     && apt-get install --no-install-recommends -y \
+      ca-certificates \
+      git \
+      gnupg \
+      jq \
       postgresql-client \
-      sqlite3 \
       procps \
       pv \
-      jq \
+      sqlite3 \
       sudo \
-      git
+      vim-tiny
+
+# Enable the google-cloud-sdk repository.
+# Users may want to run `gcloud auth application-default login` to enable key management with the `sops` tool
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
+    && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - \
+    && apt-get update -y \
+    && apt-get install google-cloud-sdk --no-install-recommends -y
 
 # Allow users to use sudo inside the dev container. This allows people to install their own
 # software in the container without modifying this Dockerfile.

@@ -1,14 +1,13 @@
-# This schema was produced via `flowctl discover --image ghcr.io/estuary/source-postgres:1d9247b`
+# This schema was produced via `flowctl discover --image ghcr.io/estuary/source-postgres:dev`
 allOf:
   - properties:
       _meta:
-        type: object
         properties:
           before:
             $ref: "#PublicDocuments"
             description: Record state immediately before this change was applied.
           op:
-            description: "Change operation type: 'c' Insert, 'u' Update, 'd' Delete."
+            description: "Change operation type: 'c' Create/Insert, 'u' Update, 'd' Delete."
             enum: [c, d, u]
           source:
             additionalProperties: false
@@ -21,16 +20,16 @@ allOf:
                 minItems: 3
                 type: array
               schema:
-                description: Database schema of the event.
+                description: Database schema (namespace) of the event.
                 type: string
               snapshot:
-                description: Snapshot is true if the record was produced from an initial table snapshot
+                description: Snapshot is true if the record was produced from an initial table backfill and unset if produced from the replication log.
                 type: boolean
               table:
                 description: Database table of the event.
                 type: string
               ts_ms:
-                description: Unix timestamp
+                description: Unix timestamp (in millis) at which this event was recorded by the database.
                 type: integer
             required:
               - schema
@@ -39,6 +38,7 @@ allOf:
         required:
           - op
           - source
+        type: object
     required:
       - _meta
   - $ref: "#PublicDocuments"
@@ -47,7 +47,7 @@ definitions:
     $anchor: PublicDocuments
     properties:
       body:
-        description: Text of the document, which is split and counted.
+        description: Text of the document, to be split and counted.
         type: string
       id:
         description: ID of the document.

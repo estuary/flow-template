@@ -6,7 +6,6 @@
 	"workspaceFolder": "/workspace",
 	// Set *default* container specific settings.json values on container create.
 	"settings": {
-		"terminal.integrated.shell.linux": "/bin/bash",
 		"sqltools.connections": [
 			{
 				"name": "Container database",
@@ -33,7 +32,13 @@
 				"*.flow.yaml"
 			]
 		},
-		"python.pythonPath": "/usr/bin/python3"
+		"terminal.integrated.profiles.linux":  {
+			"bash": {
+				"path": "bash",
+				"icon": "terminal-bash"
+			},
+		},
+		"terminal.integrated.defaultProfile.linux": "bash",
 	},
 	// IDs of extensions to install when the container is created.
 	"extensions": [
