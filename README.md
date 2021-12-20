@@ -2,7 +2,11 @@
 
 This repository is an example and template for new Flow projects.
 Try it in your browser by selecting **<> Code > Codespaces > New codespace**,
-  using [GitHub Codespaces](https://github.com/features/codespaces).
+  using [GitHub Codespaces](https://github.com/features/codespaces). 
+  
+Not part of an organization with access to Codespaces? No problem. Follow the instructions 
+to [set up a local devcontainer](https://docs.estuary.dev/getting-started/installation#using-visual-studio-code-devcontainers) 
+and proceed in the same manner. Note, however, that [Mac M1](https://support.apple.com/en-us/HT211814) is not currently supported for local development. 
 
 Wondering what Flow is?
 See 📖 [Documentation](https://docs.estuary.dev/)
