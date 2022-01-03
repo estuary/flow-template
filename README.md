@@ -50,7 +50,7 @@ Ran 1 tests, 1 passed, 0 failed
 
 Start a local, temporary Flow data plane:
 ```console
-$ flowctl temp-data-plane --builds-root file://$(pwd)/
+$ flowctl temp-data-plane 
 export BROKER_ADDRESS=http://localhost:8080
 export CONSUMER_ADDRESS=http://localhost:9000
 ```
