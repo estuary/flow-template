@@ -4,7 +4,7 @@ import:
 captures:
   acmeCo/postgres/source-documents:
     endpoint:
-      airbyteSource:
+      connector:
         image: ghcr.io/estuary/source-postgres:dev
         config:
           # Logical database name to capture from.
@@ -31,7 +31,7 @@ captures:
 materializations:
   acmeCo/postgres/materialize-word-counts:
     endpoint:
-      flowSink:
+      connector:
         image: ghcr.io/estuary/materialize-postgres:dev
         config:
           database: flow
