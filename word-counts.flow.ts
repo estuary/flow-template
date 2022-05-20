@@ -1,13 +1,12 @@
-import { collections, interfaces, registers, anchors } from 'flow/modules';
+import { Document, FromDocumentsSource, IDerivation, Register } from 'flow/acmeCo/word-counts';
 
-// Implementation for derivation word-counts.flow.yaml#/collections/acmeCo~1word-counts/derivation.
-export class AcmeCoWordCounts implements interfaces.AcmeCoWordCounts {
-    fromDocumentsPublish(
-        source: collections.AcmeCoDocuments,
-        _register: registers.AcmeCoWordCounts,
-        _previous: registers.AcmeCoWordCounts,
-    ): collections.AcmeCoWordCounts[] {
-        const out: collections.AcmeCoWordCounts[] = [];
+import { PublicDocuments } from 'flow/acmeCo/documents';
+
+// Implementation for derivation
+// word-counts.flow.yaml#/collections/acmeCo~1word-counts/derivation.
+export class Derivation implements IDerivation {
+    fromDocumentsPublish(source: FromDocumentsSource, _register: Register, _previous: Register): Document[] {
+        const out: Document[] = [];
 
         switch (source._meta.op) {
             case 'c':
@@ -25,13 +24,14 @@ export class AcmeCoWordCounts implements interfaces.AcmeCoWordCounts {
     }
 }
 
-function updates(doc: anchors.PublicDocuments, delta: number, out: collections.AcmeCoWordCounts[]) {
+function updates(doc: FromDocumentsSource | PublicDocuments, delta: number, out: Document[]) {
     // A very basic tokenizer of the string, converting to lowercase words.
     const words = doc.body?.toLocaleLowerCase().match(/(\w+)/gu);
 
-    // Emit an output for all words, updating its total count, and then for _unique_ words,
-    // updating its document count. It might seem inefficient to emit all of these little
-    // documents, but it's not: Flow eagerly combines them on the collection key.
-    words?.map((word) => out.push({ word: word, count: delta, doc_count: 0 }));
+    // Emit an output for all words, updating its total count, and then for
+    // _unique_ words, updating its document count. It might seem inefficient to
+    // emit all of these little documents, but it's not: Flow eagerly combines
+    // them on the collection key.
+    words?.map((word: string) => out.push({ word: word, count: delta, doc_count: 0 }));
     [...new Set(words)].map((word) => out.push({ word: word, count: 0, doc_count: delta }));
 }

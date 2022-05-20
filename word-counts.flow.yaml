@@ -24,6 +24,8 @@ collections:
       reduce: { strategy: merge }
     key: [/word]
     derivation:
+      typescript:
+        module: word-counts.flow.ts
       transform:
         fromDocuments:
           source:
